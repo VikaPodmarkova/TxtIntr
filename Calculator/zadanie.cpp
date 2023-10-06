@@ -1,48 +1,49 @@
+#include <unistd.h>
+#include <stdio.h>
 #include <iostream>
+#include <vector>
 #include <algorithm>
-
-int main() {
-    
-    const int min_operands = 7;
-    const int max_operands = 9;
-    int num_operands;
-
-    std::cout << "Введите количество операндов (от " << min_operands << " до " << max_operands << "): ";
-    std::cin >> num_operands;
-
-    if (num_operands < min_operands || num_operands > max_operands) {
-        std::cerr << "Количество операндов не соответствует диапазону." << std::endl;
+#include <string>
+int main(int argc, char **argv) {
+    if(argc == 1) { 
+        return 0;
+    }
+    std::vector<int> numbers; 
+    std::string op; 
+    int option;
+    double sum=0;
+    while((option = getopt(argc, argv, "o:")) != -1) { 
+        switch(option) {
+            case 'o': 
+                op = std::string(optarg);
+                if(op!="median" && op!="arithmetic"){ 
+    				std::cout << "Введено неправильное значение опции"<< "\n";
+    				return 0;
+    			}else{
+                	for(int i=3; i<argc; i++){ 
+        				numbers.push_back(atoi(argv[i]));
+        			}
+        		}
+        		  if (numbers.size() < 7 || numbers.size() > 9) {
+        std::cerr << "Неверное количество операндов" << std::endl;
         return 1;
     }
-
-    double numbers[max_operands];
-    std::cout << "Введите " << num_operands << " чисел: ";
-    for (int i = 0; i < num_operands; ++i) {
-        std::cin >> numbers[i];
+        		if (op=="median"){ 
+        			std::sort(numbers.begin(), numbers.end());
+        			if(numbers.size()%2!=0){
+        				std::cout << "Медиана = " << numbers[(numbers.size()-1)/2.0] << "\n";
+        			}else{
+            			std::cout << "Медиана = "<< (numbers[numbers.size()/2]+numbers[(numbers.size())/2-1])/2.0 << "\n";
+        			}
+        			return 0;
+        		}
+        		if(op=="arithmetic"){ 
+        			for(uint i=0; i<numbers.size(); i++){
+        			sum+=numbers[i];
+        			}
+            		std::cout << "Среднее арифметическое = "<< sum/numbers.size() << "\n";
+        		}
+        			return 0;
+        }
     }
-
-    std::sort(numbers, numbers + num_operands);
-
-    double median;
-    if (num_operands % 2 == 0) {
-        median = (numbers[num_operands / 2 - 1] + numbers[num_operands / 2]) / 2.0;
-    } else {
-        median = numbers[num_operands / 2];
-    }
-
-    std::cout << "Медиана: " << median << std::endl;
-
-    double sum = 0.0;
-    std::cout << "Введите " << num_operands << " чисел: ";
-    for (int b = 0; b < num_operands; ++b) {
-        double number;
-        std::cin >> number;
-        sum += number;
-    }
-
-    double srednee = sum / num_operands;
-
-    std::cout << "Среднее арифметическое: " << srednee << std::endl;
-
-    return 0;
 }
